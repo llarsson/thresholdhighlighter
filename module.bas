@@ -42,6 +42,10 @@ For currentRow = 1 To samples.Rows.Count
                     Debug.Print "OVER " & currentThreshold & " because " & currentSample & " at " & currentRow & "," & sampleColumn & " has value " & sampleValue
                     thresholds.Cells(currentRow, thresholdColumn).Copy
                     samples.Cells(currentRow, sampleColumn).PasteSpecial Paste:=xlPasteFormats
+                    
+                    samples.Cells(currentRow, sampleColumn + samples.Columns.Count).PasteSpecial Paste:=xlPasteFormats
+                    samples.Cells(currentRow, sampleColumn + samples.Columns.Count).Value = sampleValue / currentThreshold
+                    samples.Cells(currentRow, sampleColumn + samples.Columns.Count).NumberFormat = "0.0"
                 End If
             End If
             
