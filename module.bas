@@ -1,4 +1,4 @@
-Attribute VB_Name = "Module1"
+Attribute VB_Name = "ThresholdHighlighter"
 Sub ThresholdHighlighter2000()
 Dim samples As Range, thresholds As Range
 
