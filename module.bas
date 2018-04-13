@@ -37,6 +37,8 @@ For currentRow = 1 To samples.Rows.Count
                     Debug.Print "OVER (INCONCLUSIVE) " & currentThreshold & " because " & currentSample & " at " & currentRow & "," & sampleColumn & " has value " & sampleValue
                     samples.Cells(currentRow, sampleColumn).Font.Color = vbRed
                     samples.Cells(currentRow, sampleColumn).Font.Bold = True
+                    
+                    samples.Cells(currentRow, sampleColumn + samples.Columns.Count).Value = "RapporteringsgrŠns > RV"
                 Else
                     ' Lab was sure, and the sample is over
                     Debug.Print "OVER " & currentThreshold & " because " & currentSample & " at " & currentRow & "," & sampleColumn & " has value " & sampleValue
