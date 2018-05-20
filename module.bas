@@ -10,6 +10,16 @@ If thresholds.Rows.Count <> samples.Rows.Count Then
     Exit Sub
 End If
 
+' Where do we want our results to wind up? Below or to the side?
+Dim resultRowDelta As Integer, resultColumnDelta As Integer
+If MsgBox("Show results to the side (= Yes)? If not, they will be below (= No).", vbYesNo, "Results to the side or not?") = vbYes Then
+    resultRowDelta = 0
+    resultColumnDelta = samples.Columns.Count ' Place them this many columns to the side
+Else
+    resultRowDelta = samples.Rows.Count ' Place them this many rows below
+    resultColumnDelta = 0
+End If
+
 For currentRow = 1 To samples.Rows.Count
     For sampleColumn = 1 To samples.Columns.Count
         For thresholdColumn = 1 To thresholds.Columns.Count
@@ -25,7 +35,7 @@ For currentRow = 1 To samples.Rows.Count
             lessThanSignInSample = InStr(currentSample, "<") <> 0
             If lessThanSignInSample Then
                 tokens = Split(currentSample, "<")
-                sampleValue = CDbl(tokens(1) * 0.999999)
+                sampleValue = CDbl(tokens(1) * 0.999999999)
             Else
                 sampleValue = currentSample
             End If
@@ -38,16 +48,16 @@ For currentRow = 1 To samples.Rows.Count
                     samples.Cells(currentRow, sampleColumn).Font.Color = vbRed
                     samples.Cells(currentRow, sampleColumn).Font.Bold = True
                     
-                    samples.Cells(currentRow, sampleColumn + samples.Columns.Count).Value = "RapporteringsgrŠns > RV"
+                    samples.Cells(currentRow + resultRowDelta, sampleColumn + resultColumnDelta).Value = "RapporteringsgrÃ¤ns > RV"
                 Else
                     ' Lab was sure, and the sample is over
                     Debug.Print "OVER " & currentThreshold & " because " & currentSample & " at " & currentRow & "," & sampleColumn & " has value " & sampleValue
                     thresholds.Cells(currentRow, thresholdColumn).Copy
                     samples.Cells(currentRow, sampleColumn).PasteSpecial Paste:=xlPasteFormats
                     
-                    samples.Cells(currentRow, sampleColumn + samples.Columns.Count).PasteSpecial Paste:=xlPasteFormats
-                    samples.Cells(currentRow, sampleColumn + samples.Columns.Count).Value = sampleValue / currentThreshold
-                    samples.Cells(currentRow, sampleColumn + samples.Columns.Count).NumberFormat = "0.0"
+                    samples.Cells(currentRow + resultRowDelta, sampleColumn + resultColumnDelta).PasteSpecial Paste:=xlPasteFormats
+                    samples.Cells(currentRow + resultRowDelta, sampleColumn + resultColumnDelta).Value = sampleValue / currentThreshold
+                    samples.Cells(currentRow + resultRowDelta, sampleColumn + resultColumnDelta).NumberFormat = "0.0"
                 End If
             End If
             
