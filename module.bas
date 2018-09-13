@@ -2,18 +2,19 @@ Attribute VB_Name = "ThresholdHighlighter"
 Sub ThresholdHighlighter2000()
 Dim samples As Range, thresholds As Range
 
-Set testNames = Application.InputBox("Välj namnen på ämnena", "Threshold highlighter 2000", Type:=8)
-Set thresholds = Application.InputBox("Välj gränsvärdena", "Threshold highlighter 2000", Type:=8)
-Set samples = Application.InputBox("Välj proverna", "Threshold highlighter 2000", Type:=8)
+Set testNames = Application.InputBox("Select test names", "Threshold highlighter 2000", Type:=8)
+Set thresholds = Application.InputBox("Select thresholds", "Threshold highlighter 2000", Type:=8)
+Set samples = Application.InputBox("Select samples", "Threshold highlighter 2000", Type:=8)
 
-If thresholds.Rows.Count <> samples.Rows.Count Then
-    MsgBox ("Olika antal prover och gränsvärden har valts!")
+If thresholds.Rows.Count <> samples.Rows.Count Or testNames.Rows.Count <> samples.Rows.Count Then
+    MsgBox ("Different number of names, thresholds, or samples selected!")
     Exit Sub
 End If
 
 ' Where do we want our results to wind up? Below or to the side?
 Dim resultRowDelta As Integer, resultColumnDelta As Integer
-'If MsgBox("Välj Ja för att se svaren på sidan och Nej för att se svaren nedanför.", vbYesNo, "Resultaten på sidan eller ej?") = vbYes Then
+
+'If MsgBox("Choose Yes for answers on the side, and No for answers below", vbYesNo, "Results on the side or not?") = vbYes Then
 '    resultRowDelta = 0
 '    resultColumnDelta = samples.Columns.Count ' Place them this many columns to the side'
 'Else
