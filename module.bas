@@ -2,23 +2,28 @@ Attribute VB_Name = "ThresholdHighlighter"
 Sub ThresholdHighlighter2000()
 Dim samples As Range, thresholds As Range
 
-Set thresholds = Application.InputBox("Select the thresholds", "Threshold highlighter 2000", Type:=8)
-Set samples = Application.InputBox("Select the samples", "Threshold highlighter 2000", Type:=8)
+Set testNames = Application.InputBox("Välj namnen på ämnena", "Threshold highlighter 2000", Type:=8)
+Set thresholds = Application.InputBox("Välj gränsvärdena", "Threshold highlighter 2000", Type:=8)
+Set samples = Application.InputBox("Välj proverna", "Threshold highlighter 2000", Type:=8)
 
 If thresholds.Rows.Count <> samples.Rows.Count Then
-    MsgBox ("Select all samples and thresholds to use, please!")
+    MsgBox ("Olika antal prover och gränsvärden har valts!")
     Exit Sub
 End If
 
 ' Where do we want our results to wind up? Below or to the side?
 Dim resultRowDelta As Integer, resultColumnDelta As Integer
-If MsgBox("Show results to the side (= Yes)? If not, they will be below (= No).", vbYesNo, "Results to the side or not?") = vbYes Then
-    resultRowDelta = 0
-    resultColumnDelta = samples.Columns.Count ' Place them this many columns to the side
-Else
-    resultRowDelta = samples.Rows.Count ' Place them this many rows below
-    resultColumnDelta = 0
-End If
+'If MsgBox("Välj Ja för att se svaren på sidan och Nej för att se svaren nedanför.", vbYesNo, "Resultaten på sidan eller ej?") = vbYes Then
+'    resultRowDelta = 0
+'    resultColumnDelta = samples.Columns.Count ' Place them this many columns to the side'
+'Else
+'    resultRowDelta = samples.Rows.Count + 1 ' Place them this many rows below (add one row for extra space)
+'    resultColumnDelta = 0
+'End If
+
+' Nope, always just put the results in a box below
+resultRowDelta = samples.Rows.Count + 1
+resultColumnDelta = 0
 
 For currentRow = 1 To samples.Rows.Count
     For sampleColumn = 1 To samples.Columns.Count
@@ -26,7 +31,8 @@ For currentRow = 1 To samples.Rows.Count
             currentSample = samples.Cells(currentRow, sampleColumn)
             currentThreshold = thresholds.Cells(currentRow, thresholdColumn)
             
-            If IsNull(currentSample) Or IsNull(currentThreshold) Then
+            If IsEmpty(currentThreshold) Or IsEmpty(currentSample) Or IsNull(currentSample) Or IsNull(currentThreshold) Or currentThreshold = 0 Then
+                Debug.Print "Skipping for threshold at (" & currentRow & "," & thresholdColumn & ") and sample at (" & currentRow & "," & sampleColumn & ") due to malformed data"
                 GoTo NextIteration
             End If
             
@@ -66,5 +72,21 @@ NextIteration:
     Next sampleColumn
 Next currentRow
 
+' TODO add borders to all cells in result box
+
+If resultRowDelta > 0 Then
+' If we get here, the results are set to show up below, and we should add a gray line and the names of the tests
+
+' TODO gray row first...
+
+' ...and now the test names
+Dim nameIndex As Integer
+For nameIndex = 1 To testNames.Rows.Count
+    testNames.Cells(nameIndex, 1).Copy
+    testNames.Cells(testNames.Rows.Count + 1 + nameIndex, 1).Value = testNames.Cells(nameIndex, 1)
+    testNames.Cells(testNames.Rows.Count + 1 + nameIndex, 1).PasteSpecial Paste:=xlPasteFormats
+Next nameIndex
+
+End If
 
 End Sub
