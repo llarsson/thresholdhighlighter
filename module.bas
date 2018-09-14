@@ -2,12 +2,12 @@ Attribute VB_Name = "ThresholdHighlighter"
 Sub ThresholdHighlighter2000()
 Dim samples As Range, thresholds As Range
 
-Set testNames = Application.InputBox("Select test names", "Threshold highlighter 2000", Type:=8)
+Set parameterNames = Application.InputBox("Select parameter names", "Threshold highlighter 2000", Type:=8)
 Set thresholds = Application.InputBox("Select thresholds", "Threshold highlighter 2000", Type:=8)
 Set samples = Application.InputBox("Select samples", "Threshold highlighter 2000", Type:=8)
 
-If thresholds.Rows.Count <> samples.Rows.Count Or testNames.Rows.Count <> samples.Rows.Count Then
-    MsgBox ("Different number of names, thresholds, or samples selected!")
+If thresholds.Rows.Count <> samples.Rows.Count Or parameterNames.Rows.Count <> samples.Rows.Count Then
+    MsgBox ("Different number of parameters, thresholds, or samples selected!")
     Exit Sub
 End If
 
@@ -80,13 +80,21 @@ If resultRowDelta > 0 Then
 
 ' TODO gray row first...
 
-' ...and now the test names
-Dim nameIndex As Integer
-For nameIndex = 1 To testNames.Rows.Count
-    testNames.Cells(nameIndex, 1).Copy
-    testNames.Cells(testNames.Rows.Count + 1 + nameIndex, 1).Value = testNames.Cells(nameIndex, 1)
-    testNames.Cells(testNames.Rows.Count + 1 + nameIndex, 1).PasteSpecial Paste:=xlPasteFormats
-Next nameIndex
+' ...and now the parameter names
+Dim parameterIndex As Integer
+For parameterIndex = 1 To parameterNames.Rows.Count
+    parameterNames.Cells(parameterIndex, 1).Copy
+    parameterNames.Cells(parameterNames.Rows.Count + 1 + parameterIndex, 1).Value = parameterNames.Cells(parameterIndex, 1)
+    parameterNames.Cells(parameterNames.Rows.Count + 1 + parameterIndex, 1).PasteSpecial Paste:=xlPasteFormats
+Next parameterIndex
+
+' ...copy down the thresholds as well, with formatting
+Dim thresholdIndex As Integer
+For thresholdIndex = 1 To thresholds.Rows.Count
+    thresholds.Cells(thresholdIndex, 1).Copy
+    thresholds.Cells(thresholds.Rows.Count + 1 + thresholdIndex, 1).Value = thresholds.Cells(thresholdIndex, 1)
+    thresholds.Cells(thresholds.Rows.Count + 1 + thresholdIndex, 1).PasteSpecial Paste:=xlPasteFormats
+Next thresholdIndex
 
 End If
 
