@@ -23,7 +23,10 @@ Dim resultRowDelta As Integer, resultColumnDelta As Integer
 'End If
 
 ' Nope, always just put the results in a box below
-resultRowDelta = samples.Rows.Count + 1
+Dim resultOffset As Integer
+resultOffset = Application.InputBox("How many rows under the last threshold should the results be shown?", "Threshold highlighter 2000", Type:=1)
+Debug.Print "resultOffset = " & resultOffset
+resultRowDelta = samples.Rows.Count + resultOffset
 resultColumnDelta = 0
 
 For currentRow = 1 To samples.Rows.Count
@@ -32,9 +35,11 @@ For currentRow = 1 To samples.Rows.Count
             currentSample = samples.Cells(currentRow, sampleColumn)
             currentThreshold = thresholds.Cells(currentRow, thresholdColumn)
             
-            If IsEmpty(currentThreshold) Or IsEmpty(currentSample) Or IsNull(currentSample) Or IsNull(currentThreshold) Or currentThreshold = 0 Then
+            If IsEmpty(currentThreshold) Or IsEmpty(currentSample) Or IsNull(currentSample) Or IsNull(currentThreshold) Or currentThreshold = 0 Or currentSample = "" Or currentThreshold = "" Then
                 Debug.Print "Skipping for threshold at (" & currentRow & "," & thresholdColumn & ") and sample at (" & currentRow & "," & sampleColumn & ") due to malformed data"
                 GoTo NextIteration
+            Else
+                Debug.Print "Working with sample value [" & currentSample & "]"
             End If
             
             Dim lessThanSignInSample As Boolean
@@ -44,7 +49,7 @@ For currentRow = 1 To samples.Rows.Count
                 tokens = Split(currentSample, "<")
                 sampleValue = CDbl(tokens(1) * 0.999999999)
             Else
-                sampleValue = currentSample
+                sampleValue = CDbl(currentSample)
             End If
             
             If sampleValue > currentThreshold Then
@@ -84,16 +89,16 @@ If resultRowDelta > 0 Then
 Dim parameterIndex As Integer
 For parameterIndex = 1 To parameterNames.Rows.Count
     parameterNames.Cells(parameterIndex, 1).Copy
-    parameterNames.Cells(parameterNames.Rows.Count + 1 + parameterIndex, 1).Value = parameterNames.Cells(parameterIndex, 1)
-    parameterNames.Cells(parameterNames.Rows.Count + 1 + parameterIndex, 1).PasteSpecial Paste:=xlPasteFormats
+    parameterNames.Cells(parameterNames.Rows.Count + resultOffset + parameterIndex, 1).Value = parameterNames.Cells(parameterIndex, 1)
+    parameterNames.Cells(parameterNames.Rows.Count + resultOffset + parameterIndex, 1).PasteSpecial Paste:=xlPasteFormats
 Next parameterIndex
 
 ' ...copy down the thresholds as well, with formatting
 Dim thresholdIndex As Integer
 For thresholdIndex = 1 To thresholds.Rows.Count
     thresholds.Cells(thresholdIndex, 1).Copy
-    thresholds.Cells(thresholds.Rows.Count + 1 + thresholdIndex, 1).Value = thresholds.Cells(thresholdIndex, 1)
-    thresholds.Cells(thresholds.Rows.Count + 1 + thresholdIndex, 1).PasteSpecial Paste:=xlPasteFormats
+    thresholds.Cells(thresholds.Rows.Count + resultOffset + thresholdIndex, 1).Value = thresholds.Cells(thresholdIndex, 1)
+    thresholds.Cells(thresholds.Rows.Count + resultOffset + thresholdIndex, 1).PasteSpecial Paste:=xlPasteFormats
 Next thresholdIndex
 
 End If
