@@ -32,6 +32,7 @@ resultColumnDelta = 0
 For currentRow = 1 To samples.Rows.Count
     For sampleColumn = 1 To samples.Columns.Count
         For thresholdColumn = 1 To thresholds.Columns.Count
+            Dim currentSample As String
             currentSample = samples.Cells(currentRow, sampleColumn)
             currentThreshold = thresholds.Cells(currentRow, thresholdColumn)
             
@@ -44,6 +45,8 @@ For currentRow = 1 To samples.Rows.Count
             
             Dim lessThanSignInSample As Boolean
             Dim sampleValue As Double
+            currentSample = Replace(currentSample, ".", Application.International(xlDecimalSeparator))
+            currentSample = Replace(currentSample, ",", Application.International(xlDecimalSeparator))
             lessThanSignInSample = InStr(currentSample, "<") <> 0
             If lessThanSignInSample Then
                 tokens = Split(currentSample, "<")
